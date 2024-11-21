@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Speech to Text",
+  "version": "0.0.1",
+  "description": "Converting speech to text",
+  "permissions": [
+    "sidePanel",
+    "activeTab",
+    "tabs",
+    "aiLanguageModelOriginTrial"
+  ],
+  "trial_tokens": [
+    "Ag7eN1G28TZugKq1CoH8XPBVYBxaKLCXNtvVkLVfDLjjKoy2HoU5IvWDYsgcvYlwenQb89focaXIZPmk1pRIcQEAAAB4eyJvcmlnaW4iOiJjaHJvbWUtZXh0ZW5zaW9uOi8vbmNuZWdub3Bib2ZhYmJqaW9jYWpsY2tpb2pmbWRobWIiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElGb3JFeHRlbnNpb24iLCJleHBpcnkiOjE3NjA0ODYzOTl9"
+  ],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {},
+  "side_panel": {
+    "default_path": "index.html"
+  }
+}
