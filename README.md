@@ -14,3 +14,13 @@ Currently, two official plugins are available:
 - Then run -> npm run build
 - Go to chrome://extensions/ -> switch to developer mode -> click on Load unpacked 'select the dist folder'
 - And then Run the extension
+
+---
+
+## Task
+```
+- feath DOM
+- remove HTML
+- output only content 
+- summarize
+```
