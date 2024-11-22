@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "description": "Converting speech to text",
   "permissions": [
+    "scripting",
     "sidePanel",
     "activeTab",
     "tabs",
@@ -14,10 +15,21 @@
   ],
   "host_permissions": ["<all_urls>"],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type":"module"
   },
   "action": {},
   "side_panel": {
     "default_path": "index.html"
-  }
+  },
+  "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "contentScript.js"
+            ]
+        }
+    ]
 }

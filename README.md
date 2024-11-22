@@ -11,6 +11,18 @@ Currently, two official plugins are available:
 
 - Clone the repo
 - Install the package -> npm install
+- Add Gemini API key to .env as VITE_API_KEY
 - Then run -> npm run build
 - Go to chrome://extensions/ -> switch to developer mode -> click on Load unpacked 'select the dist folder'
 - And then Run the extension
+
+---
+
+## Task
+
+```
+- feath DOM
+- remove HTML
+- output only content
+- summarize
+```

@@ -11,6 +11,7 @@ export default defineConfig({
       input: {
         side_panel: "index.html",
         background: "src/background/background.js",
+        contentScript: 'src/background/contentScript.js',
       },
       output: {
         entryFileNames: "[name].js",
