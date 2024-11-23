@@ -52,7 +52,7 @@ function App() {
           </div>
         )}
 
-        <SpeechToText />
+        {/* <SpeechToText /> */}
         <PromptAPI />
 
         <hr />

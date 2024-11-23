@@ -11,25 +11,22 @@
     "aiLanguageModelOriginTrial"
   ],
   "trial_tokens": [
-    "Ag7eN1G28TZugKq1CoH8XPBVYBxaKLCXNtvVkLVfDLjjKoy2HoU5IvWDYsgcvYlwenQb89focaXIZPmk1pRIcQEAAAB4eyJvcmlnaW4iOiJjaHJvbWUtZXh0ZW5zaW9uOi8vbmNuZWdub3Bib2ZhYmJqaW9jYWpsY2tpb2pmbWRobWIiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElGb3JFeHRlbnNpb24iLCJleHBpcnkiOjE3NjA0ODYzOTl9"
+    "AtXTSnsb2NO7zoVZpBCj46tNZfD8SEcIyhXDOpbjq7WTzz5lSC0oE4gh5fTrOONxXS67Q7QEpXK2vANIEUS0uAkAAAB4eyJvcmlnaW4iOiJjaHJvbWUtZXh0ZW5zaW9uOi8vb29rYWRmZ2FqYW9mbGZtY2JlZGlnY2xtYWtkZWZlYWQiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElGb3JFeHRlbnNpb24iLCJleHBpcnkiOjE3NjA0ODYzOTl9",
+    "Anx01Q7iguxs9QkqP98fOvaFfNAauXCueCVdDR5m97yZGvedlyBCSQa1dgcnQYnnaiASkYXtdPjFk7/67mZdFAQAAABzeyJvcmlnaW4iOiJjaHJvbWUtZXh0ZW5zaW9uOi8vb29rYWRmZ2FqYW9mbGZtY2JlZGlnY2xtYWtkZWZlYWQiLCJmZWF0dXJlIjoiQUlTdW1tYXJpemF0aW9uQVBJIiwiZXhwaXJ5IjoxNzUzMTQyNDAwfQ=="
   ],
   "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js",
-    "type":"module"
+    "type": "module"
   },
   "action": {},
   "side_panel": {
     "default_path": "index.html"
   },
   "content_scripts": [
-        {
-            "matches": [
-                "<all_urls>"
-            ],
-            "js": [
-                "contentScript.js"
-            ]
-        }
-    ]
+    {
+      "matches": ["<all_urls>"],
+      "js": ["contentScript.js"]
+    }
+  ]
 }

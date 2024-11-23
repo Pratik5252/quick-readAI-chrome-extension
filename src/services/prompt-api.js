@@ -43,15 +43,19 @@ async function reset() {
 }
 
 // Run a prompt with chrome.aiOriginTrial
-async function runChromePrompt(prompt, params) {
+async function runChromePrompt(prompt, params, onChunk) {
   try {
     if (!session) {
       session = await chrome.aiOriginTrial.languageModel.create(params);
       console.log("Session created:", session);
     }
-
     if (session) {
-      return session.promptStreaming(prompt);
+      for await (const chunk of session.promptStreaming(prompt)) {
+        console.log(chunk);
+        if (onChunk) {
+          onChunk({ text: chunk, model: "chrome" }); // Include model name
+        }
+      }
     } else {
       throw new Error("Failed to create session");
     }
@@ -70,7 +74,7 @@ async function runGeminiPrompt(prompt, onChunk) {
     for await (const chunk of response.stream) {
       console.log(chunk.text());
       if (onChunk) {
-        onChunk(chunk.text()); // Pass the chunk to the callback
+        onChunk({ text: chunk.text(), model: "gemini" }); // Pass the chunk to the callback
       }
     }
   } catch (error) {
@@ -91,14 +95,7 @@ export async function promptApi(prompt, onChunk) {
     };
 
     try {
-      const response = await runChromePrompt(prompt, params);
-
-      for await (const chunk of response) {
-        console.log(chunk);
-        if (onChunk) {
-          onChunk(chunk);
-        }
-      }
+      await runChromePrompt(prompt, params, onChunk);
     } catch (error) {
       console.error("Error in chrome.aiOriginTrial prompt:", error);
     }

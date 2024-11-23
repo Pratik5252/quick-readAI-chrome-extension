@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { promptApi } from "../services/prompt-api";
+import { summarize } from "../services/summarise-api";
+import SpeechToText from "./SpeechToText";
 const PromptAPI = () => {
   const [prompt, setPrompt] = useState("");
   const [responseText, setResponseText] = useState(""); // Response state
@@ -18,7 +20,12 @@ const PromptAPI = () => {
 
     try {
       await promptApi(prompt, (chunk) => {
-        setResponseText((prevResponse) => prevResponse + chunk);
+        const { text, model } = chunk;
+        if (model === "chrome") {
+          setResponseText(text);
+        } else {
+          setResponseText((prevResponse) => prevResponse + text);
+        }
       });
     } catch (err) {
       setError("An error occurred while fetching the response.");
@@ -38,10 +45,11 @@ const PromptAPI = () => {
         placeholder="Enter your prompt"
       />
       <button onClick={handlePrompt}>{isLoading ? "Loading..." : "Run"}</button>
-      {/* <button onClick={summarize}>Summarize</button> */}
+      <button onClick={summarize}>Summarize</button>
       <hr />
       {error && <p style={{ color: "red" }}>{error}</p>}
       {responseText && <p>{responseText}</p>}
+      <SpeechToText setPrompt={setPrompt} handlePrompt={handlePrompt} />
     </div>
   );
 };
