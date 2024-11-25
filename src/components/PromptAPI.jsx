@@ -2,7 +2,7 @@ import { useState } from "react";
 import { promptApi } from "../services/prompt-api";
 import { summarize } from "../services/summarise-api";
 import SpeechToText from "./SpeechToText";
-const PromptAPI = () => {
+const PromptAPI = ({ content }) => {
   const [prompt, setPrompt] = useState("");
   const [responseText, setResponseText] = useState(""); // Response state
   const [isLoading, setIsLoading] = useState(false); // Loading state
@@ -19,7 +19,7 @@ const PromptAPI = () => {
     setResponseText("");
 
     try {
-      await promptApi(prompt, (chunk) => {
+      await promptApi(content,prompt, (chunk) => {
         const { text, model } = chunk;
         if (model === "chrome") {
           setResponseText(text);
