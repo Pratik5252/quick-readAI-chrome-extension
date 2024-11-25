@@ -3,8 +3,6 @@ import { GoogleGenerativeAI } from "@google/generative-ai"; // Replace with the 
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 const genAI = new GoogleGenerativeAI(API_KEY);
-const geminiModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
 let session;
 
 // Initialize defaults for chrome.aiOriginTrial
@@ -43,10 +41,12 @@ async function reset() {
 }
 
 // Run a prompt with chrome.aiOriginTrial
-async function runChromePrompt(prompt, params, onChunk) {
+async function runChromePrompt(systemInstructions, prompt, params, onChunk) {
   try {
     if (!session) {
-      session = await chrome.aiOriginTrial.languageModel.create(params);
+      session = await chrome.aiOriginTrial.languageModel.create({
+        systemPrompt: systemInstructions,
+      });
       console.log("Session created:", session);
     }
     if (session) {
@@ -67,8 +67,12 @@ async function runChromePrompt(prompt, params, onChunk) {
 }
 
 // Run a prompt with the Gemini model
-async function runGeminiPrompt(prompt, onChunk) {
+async function runGeminiPrompt(systemInstructions, prompt, onChunk) {
   try {
+    const geminiModel = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash",
+      systemInstruction: systemInstructions,
+    });
     const response = await geminiModel.generateContentStream(prompt);
 
     for await (const chunk of response.stream) {
@@ -84,8 +88,25 @@ async function runGeminiPrompt(prompt, onChunk) {
 }
 
 // Expose a unified prompt API function
-export async function promptApi(prompt, onChunk) {
+export async function promptApi(content, prompt, onChunk) {
   const isChromeAvailable = await initDefaults(); // Check if chrome.aiOriginTrial is available and ready
+
+  const systemInstructions = `
+You are a specialized assistant designed to answer questions related to the content of the current webpage. Below is the extracted data from the page:
+
+--- Begin Page Data ---
+${content}
+--- End Page Data ---
+
+When responding:
+1. Understand the question fully before generating an answer.
+2. Use the provided page data as the primary source for your response.
+3. Be concise, accurate, and provide additional context when necessary.
+4. Format your response in **markdown**, ensuring it is well-structured and readable.
+5. If the question cannot be answered from the given data, explicitly state that.
+
+Your primary goal is to provide relevant and context-aware answers based on the provided page data.
+`;
 
   if (isChromeAvailable) {
     console.log("Using chrome.aiOriginTrial model");
@@ -95,13 +116,13 @@ export async function promptApi(prompt, onChunk) {
     };
 
     try {
-      await runChromePrompt(prompt, params, onChunk);
+      await runChromePrompt(systemInstructions, prompt, params, onChunk);
     } catch (error) {
       console.error("Error in chrome.aiOriginTrial prompt:", error);
     }
   } else {
     console.log("Using Gemini model");
-    await runGeminiPrompt(prompt, onChunk); // Fall back to the Gemini model
+    await runGeminiPrompt(systemInstructions, prompt, onChunk); // Fall back to the Gemini model
   }
 }
 

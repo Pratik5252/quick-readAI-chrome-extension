@@ -34,7 +34,6 @@ const useSpeechToText = ({ setPrompt, handlePrompt }) => {
     if (listening) {
       SpeechRecognition.stopListening();
       await setPrompt(transcript);
-      handlePrompt();
     } else {
       resetTranscript(); // Clear transcript on start
       setPrompt("");

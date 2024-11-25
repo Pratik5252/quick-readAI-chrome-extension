@@ -130,7 +130,7 @@ function App() {
         >
           {/* <SpeechToText /> */}
           <Typography variant="h6">Prompt AI</Typography>
-          <PromptAPI />
+          <PromptAPI content={extractedData} />
         </Box>
       </Container>
     </ThemeProvider>
