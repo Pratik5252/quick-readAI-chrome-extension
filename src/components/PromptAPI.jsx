@@ -2,6 +2,10 @@ import { useState } from "react";
 import { promptApi } from "../services/prompt-api";
 import { summarize } from "../services/summarise-api";
 import SpeechToText from "./SpeechToText";
+
+import { Box, Button, ButtonGroup, TextField } from "@mui/material";
+import ArrowUpwardOutlinedIcon from "@mui/icons-material/ArrowUpwardOutlined";
+import SummarizeOutlinedIcon from "@mui/icons-material/SummarizeOutlined";
 const PromptAPI = ({ content }) => {
   const [prompt, setPrompt] = useState("");
   const [responseText, setResponseText] = useState(""); // Response state
@@ -19,7 +23,7 @@ const PromptAPI = ({ content }) => {
     setResponseText("");
 
     try {
-      await promptApi(content,prompt, (chunk) => {
+      await promptApi(content, prompt, (chunk) => {
         const { text, model } = chunk;
         if (model === "chrome") {
           setResponseText(text);
@@ -36,21 +40,48 @@ const PromptAPI = ({ content }) => {
   };
 
   return (
-    <div>
-      <input
-        type="text"
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        color: "primary.light",
+      }}
+    >
+      <TextField
+        id="outlined-basic"
+        label="Enter your prompt"
+        variant="outlined"
         name="input"
-        value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
-        placeholder="Enter your prompt"
+        sx={{
+          mt: 2,
+          color: "primary.light",
+          "& .MuiInputLabel-root": {
+            color: "primary.light", // Set label color to white
+          },
+          "& .MuiInputBase-input": {
+            color: "primary.light", // Set input text color to white
+          },
+        }}
       />
-      <button onClick={handlePrompt}>{isLoading ? "Loading..." : "Run"}</button>
-      <button onClick={summarize}>Summarize</button>
-      <hr />
+      <ButtonGroup
+        orientation="vertical"
+        aria-label="Vertical button group"
+        variant="text"
+      >
+        <Button onClick={handlePrompt} startIcon={<ArrowUpwardOutlinedIcon />}>
+          {isLoading ? "Loading..." : "Run"}
+        </Button>
+        <Button onClick={summarize} startIcon={<SummarizeOutlinedIcon />}>
+          Summarize
+        </Button>
+      </ButtonGroup>
       {error && <p style={{ color: "red" }}>{error}</p>}
       {responseText && <p>{responseText}</p>}
       <SpeechToText setPrompt={setPrompt} handlePrompt={handlePrompt} />
-    </div>
+    </Box>
   );
 };
 
