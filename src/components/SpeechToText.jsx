@@ -1,4 +1,6 @@
 import useSpeechToText from "../hooks/useSpeechToText";
+import MicIcon from "@mui/icons-material/Mic";
+import MicOffIcon from "@mui/icons-material/MicOff";
 
 const SpeechToText = ({ setPrompt, handlePrompt }) => {
   const { transcript, listening, microphoneAccess, toggleRecording } =
@@ -7,13 +9,13 @@ const SpeechToText = ({ setPrompt, handlePrompt }) => {
   return (
     <div
       style={{
-        padding: "1rem",
-        fontFamily: "Arial",
+        // padding: "1rem",
+        fontFamily: "Inter",
         maxWidth: "600px",
-        margin: "auto",
+        // margin: "auto",
       }}
     >
-      <h1>Speech to Text</h1>
+      {/* <h1>Speech to Text</h1> */}
       {!microphoneAccess && (
         <p style={{ color: "red" }}>Please allow microphone access.</p>
       )}
@@ -22,13 +24,17 @@ const SpeechToText = ({ setPrompt, handlePrompt }) => {
         disabled={!microphoneAccess}
         style={{ margin: "10px 0" }}
       >
-        {listening ? "Stop Listening" : "Start Listening"}
+        {listening ? (
+          <MicOffIcon className="text-primary" />
+        ) : (
+          <MicIcon className="text-primary" />
+        )}
       </button>
-      <p>{listening ? "Listening..." : "Click to start listening."}</p>
+      {/* <p>{listening ? "Listening..." : "Click to start listening."}</p>
       <div style={{ marginTop: "20px" }}>
         <h2>Transcript:</h2>
         <p>{transcript || "Your transcript will appear here."}</p>
-      </div>
+      </div> */}
     </div>
   );
 };
