@@ -5,6 +5,15 @@ const API_KEY = import.meta.env.VITE_API_KEY;
 const genAI = new GoogleGenerativeAI(API_KEY);
 let session;
 
+function formatLinks(text) {
+  // Regular expression to match URLs (basic version)
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return text.replace(
+    urlRegex,
+    (url) => `<a href="${url}" target="_blank">${url}</a>`
+  );
+}
+
 // Initialize defaults for chrome.aiOriginTrial
 export async function initDefaults() {
   if (!("aiOriginTrial" in chrome)) {
@@ -51,9 +60,12 @@ async function runChromePrompt(systemInstructions, prompt, params, onChunk) {
     }
     if (session) {
       for await (const chunk of session.promptStreaming(prompt)) {
-        console.log(chunk);
+        let chunkText = chunk;
+
+        chunkText = formatLinks(chunkText);
+        console.log(chunkText);
         if (onChunk) {
-          onChunk({ text: chunk, model: "chrome" }); // Include model name
+          onChunk({ text: chunkText, model: "chrome" }); // Include model name
         }
       }
     } else {
@@ -76,9 +88,11 @@ async function runGeminiPrompt(systemInstructions, prompt, onChunk) {
     const response = await geminiModel.generateContentStream(prompt);
 
     for await (const chunk of response.stream) {
+      let chunkText = chunk.text();
+      chunkText = formatLinks(chunkText);
       console.log(chunk.text());
       if (onChunk) {
-        onChunk({ text: chunk.text(), model: "gemini" }); // Pass the chunk to the callback
+        onChunk({ text: chunkText, model: "gemini" }); // Pass the chunk to the callback
       }
     }
   } catch (error) {
@@ -119,6 +133,8 @@ Your primary goal is to provide relevant and context-aware answers based on the 
       await runChromePrompt(systemInstructions, prompt, params, onChunk);
     } catch (error) {
       console.error("Error in chrome.aiOriginTrial prompt:", error);
+      console.log("Falling back to Gemini model...");
+      await runGeminiPrompt(systemInstructions, prompt, onChunk);
     }
   } else {
     console.log("Using Gemini model");
@@ -128,76 +144,3 @@ Your primary goal is to provide relevant and context-aware answers based on the 
 
 // Initialize the defaults on script load
 initDefaults();
-
-// let session;
-// export async function initDefaults() {
-//   if (!ai) {
-//     console.log("Error: chrome.aiOriginTrial not supported in this browser");
-//     return;
-//   }
-
-//   try {
-//     const defaults = await ai.languageModel.capabilities();
-//     console.log("Model default:", defaults);
-
-//     if (defaults.available !== "readily") {
-//       console.log(
-//         `Model not yet available (current state: "${defaults.available}")`
-//       );
-//       return;
-//     }
-//   } catch (error) {
-//     console.error("Error initializing defaults:", error);
-//   }
-// }
-
-// // Reset session
-// async function reset() {
-//   if (session) {
-//     session.destroy();
-//     session = null;
-//   }
-// }
-
-// // Run a prompt with given parameters
-// async function runPrompt(prompt, params) {
-//   try {
-//     if (!session) {
-//       session = await ai.languageModel.create(params);
-//     }
-
-//     if (session) {
-//       return session.promptStreaming(prompt);
-//     } else {
-//       throw new Error("Failed to create session");
-//     }
-//   } catch (error) {
-//     console.log("Prompt failed");
-//     console.error(error);
-//     console.log("Prompt:", prompt);
-
-//     // Reset session
-//     await reset();
-//     throw error;
-//   }
-// }
-
-// // Expose a prompt API function
-// export async function promptApi(prompt) {
-//   try {
-//     const params = {
-//       temperature: 0.3,
-//       topK: 1,
-//     };
-
-//     const response = await runPrompt(prompt, params);
-//     for await (const chunk of response) {
-//       console.log(chunk);
-//     }
-//   } catch (error) {
-//     console.error("Error in promptApi:", error);
-//   }
-// }
-
-// // Initialize defaults
-// initDefaults();
