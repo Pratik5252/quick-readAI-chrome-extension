@@ -1,6 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary-background: 248 248 248;
+    --color-secondary-background: 244 244 244;
+    --color-primary-text: 18 18 18;
+    --color-secondary-text: 78 78 78;
+    --color-border: 229 231 235;
+    --loader-bg-color: 221 221 225;
+    --color-error: 223 50 50;
+  }
+
+  .dark {
+    --color-primary-background: 26 26 16;
+    --color-secondary-background: 47 47 47;
+    --color-primary-text: 238 238 238;
+    --color-secondary-text: 200 200 200;
+    --color-accent: 30 148 244;
+    --color-border: 63 63 70;
+    --loader-bg-color: 103 103 110;
+    --color-error: 223 50 50;
+  }
+}
 /* Remove margin and padding from all elements */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+  width: 4px; /* width of the scrollbar */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #6a6a6a; /* Scrollbar thumb color */
+  border-radius: 10px; /* Rounded corners */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Hover effect */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* Track color */
 }
