@@ -1,10 +1,14 @@
 import ThemeToggle from "../ui/ThemeToggle";
+import Setting from "./Setting";
 
 const Header = () => {
   return (
-    <div className="flex justify-between items-center px-4 py-4 ">
+    <div className="sticky top-0 bg-primary-bg flex justify-between items-center px-4 py-4 ">
       <h1 className="text-primary text-xl font-bold">Browser Guide</h1>
-      <ThemeToggle />
+      <div className="flex items-center gap-4">
+        <ThemeToggle />
+        <Setting />
+      </div>
     </div>
   );
 };

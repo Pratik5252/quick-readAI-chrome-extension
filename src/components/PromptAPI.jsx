@@ -50,36 +50,31 @@ const PromptAPI = ({ content }) => {
   };
 
   return (
-    <div className="flex flex-col h-full p-2 my-2 mx-3 px-1 ">
-      <div className="h-full flex flex-col py-2">
-        <div className="flex flex-col justify-start items-center my-2 flex-1">
-          {/* {error && <p style={{ color: "red" }}>{error}</p>} */}
-          <p className="text-primary text-right">{prompt}</p>
-          {/* Prompt Response */}
-          {isLoading ? (
-            <div className="w-full flex flex-col bg-secondary-bg px-2 py-3 border border-br rounded">
-              <SkeletonLoader width="40%" height={24} />
-              <SkeletonLoader count={2} width="95%" height={16} />
-              <SkeletonLoader width="70%" height={16} />
-            </div>
-          ) : responseText ? (
-            <div className="w-full max-h-[60vh] flex flex-col bg-secondary-bg px-2 py-3 border border-br rounded">
-              <p className="text-primary text-sm text-left text-wrap overflow-x-hidden">
-                <ReactMarkdown className="prose">{responseText}</ReactMarkdown>
-              </p>
-            </div>
-          ) : null}
-        </div>
+    <div className="flex flex-col h-full p-2 mx-3 overflow-hidden">
+      <div className="flex-1 overflow-y-auto px-2 py-3">
+        {/* Prompt Response */}
+        {isLoading ? (
+          <div className="flex flex-col bg-secondary-bg px-2 py-3 border border-br rounded">
+            <SkeletonLoader width="40%" height={24} />
+            <SkeletonLoader count={2} width="95%" height={16} />
+            <SkeletonLoader width="70%" height={16} />
+          </div>
+        ) : responseText ? (
+          <div className="w-full flex flex-col bg-secondary-bg px-3 py-3 mb-2 border border-br rounded overflow-auto">
+            <p className="text-primary text-sm text-left">
+              <ReactMarkdown className="prose">{responseText}</ReactMarkdown>
+            </p>
+          </div>
+        ) : null}
 
-        {/* Summary Response */}
         {loading ? (
-          <div className=" flex flex-col bg-secondary-bg px-2 py-3 border border-br rounded">
+          <div className="flex flex-col bg-secondary-bg px-2 py-3 border border-br rounded">
             <SkeletonLoader width="40%" height={24} />
             <SkeletonLoader count={2} width="95%" height={16} />
             <SkeletonLoader width="70%" height={16} />
           </div>
         ) : summary ? (
-          <div className="max-h-[40vh] flex flex-col bg-secondary-bg px-1 py-3 border border-br rounded">
+          <div className="flex flex-col bg-secondary-bg px-1 py-3 border border-br rounded">
             <h1 className="text-primary text-base font-medium mb-2 px-3">
               <ArticleRoundedIcon /> Page Summary
             </h1>
@@ -90,70 +85,54 @@ const PromptAPI = ({ content }) => {
         ) : null}
       </div>
 
-      {/* Prompt Section */}
-      <div className="w-full flex justify-center items-center">
-        <div className="h-auto bg-secondary-bg flex items-center my-2 py-2 px-2 border border-br drop-shadow-sm rounded-md flex-1 gap-2">
-          <div>
+      {/* Sticky Footer Section */}
+      <div className="sticky bottom-0 bg-secondary-bg py-2 px-3 mb-2 border border-br shadow-md rounded-md">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleToggle}
+            className={`text-primary transition-transform duration-500 ${
+              toggle ? "-rotate-180" : "rotate-0"
+            }`}
+          >
+            <KeyboardArrowDownIcon />
+          </button>
+          <textarea
+            name="input"
+            id="prompt"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder="Ask Here..."
+            className="flex-1 text-primary text-sm bg-transparent outline-none py-1 placeholder:text-secondary resize-none"
+            rows="1"
+            onInput={(e) => {
+              e.target.style.height = "auto";
+              e.target.style.height = `${e.target.scrollHeight}px`;
+            }}
+          />
+          {prompt && (
             <button
-              onClick={handleToggle}
-              className={`text-primary transition-transform duration-500 ${
-                toggle ? "-rotate-180" : "rotate-0"
-              }`}
+              onClick={handlePrompt}
+              className="bg-accent hover:bg-accent/90 flex justify-center items-center text-sm text-primary p-1 transition-all duration-500 rounded"
             >
-              <KeyboardArrowDownIcon />
+              {isLoading ? (
+                <StopCircleOutlinedIcon fontSize="small" />
+              ) : (
+                <ArrowUpwardRoundedIcon fontSize="small" />
+              )}
             </button>
-          </div>
-          <div className="w-full h-auto flex justify-left items-center pl-2">
-            <textarea
-              name="input"
-              id="prompt"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Ask Here..."
-              className="w-full h-auto text-primary text-sm bg-transparent outline-none py-1 placeholder:text-secondary resize-none "
-              rows="1" // Initial number of rows
-              onInput={(e) => {
-                e.target.style.height = "auto"; // Reset the height
-                e.target.style.height = `${e.target.scrollHeight}px`; // Set height to match content
-              }}
-            />
-          </div>
-
-          {/* Run Prompt */}
-          <div className="flex justify-center items-center gap-2">
-            {prompt && (
-              <div className="bg-accent hover:bg-accent/90 flex justify-center items-center rounded border border-br">
-                <button
-                  onClick={handlePrompt}
-                  className="flex justify-center items-center text-sm text-primary p-1 transition-none duration-700"
-                >
-                  {isLoading ? (
-                    <StopCircleOutlinedIcon fontSize="small" />
-                  ) : (
-                    <ArrowUpwardRoundedIcon fontSize="small" />
-                  )}
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Microphone  */}
-        <div className="ml-2">
+          )}
           <SpeechToText setPrompt={setPrompt} handlePrompt={handlePrompt} />
         </div>
+        {toggle && (
+          <div className="mt-3">
+            <SummarizationAPI
+              content={content}
+              setSummary={setSummary}
+              setLoading={setLoading}
+            />
+          </div>
+        )}
       </div>
-
-      {/* Summarization Tab */}
-      {toggle && (
-        <div className="flex justify-start gap-2">
-          <SummarizationAPI
-            content={content}
-            setSummary={setSummary}
-            setLoading={setLoading}
-          />
-        </div>
-      )}
     </div>
   );
 };

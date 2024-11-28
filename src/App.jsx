@@ -90,7 +90,7 @@ function App() {
 
   return (
     <div className="">
-      <div className="bg-primary-bg flex flex-col h-[100vh]">
+      <div className="flex flex-col h-screen bg-primary-bg">
         {/* <Button onClick={handleClick} startIcon={<RotateRightOutlinedIcon />}>
           Extract Page Content
         </Button>
@@ -106,7 +106,9 @@ function App() {
         )} */}
 
         <Header />
-        <PromptAPI content={extractedData} />
+        <div className="flex-1 overflow-hidden">
+          <PromptAPI content={extractedData} />
+        </div>
       </div>
     </div>
   );

@@ -18,7 +18,7 @@ const SummarizationAPI = ({ content, setSummary, setLoading }) => {
   };
   return (
     <div>
-      <div className="bg-secondary-bg hover:bg-secondary-bg/90 border border-br py-[2px] px-2 rounded-sm">
+      <div className="bg-secondary-bg hover:bg-secondary-bg/90 border border-br py-1 px-2 rounded-sm">
         <button
           onClick={handleSummarize}
           className="flex justify-center items-center gap-1"

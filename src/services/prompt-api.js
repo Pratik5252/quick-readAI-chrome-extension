@@ -1,5 +1,6 @@
 /*global chrome*/
 import { GoogleGenerativeAI } from "@google/generative-ai"; // Replace with the actual path to the Gemini SDK
+import { getParams } from "./setting";
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 const genAI = new GoogleGenerativeAI(API_KEY);
@@ -8,10 +9,7 @@ let session;
 function formatLinks(text) {
   // Regular expression to match URLs (basic version)
   const urlRegex = /(https?:\/\/[^\s]+)/g;
-  return text.replace(
-    urlRegex,
-    (url) => `<a href="${url}" target="_blank">${url}</a>`
-  );
+  return text.replace(urlRegex, (url) => `[${url}](${url})`);
 }
 
 // Initialize defaults for chrome.aiOriginTrial
@@ -79,11 +77,12 @@ async function runChromePrompt(systemInstructions, prompt, params, onChunk) {
 }
 
 // Run a prompt with the Gemini model
-async function runGeminiPrompt(systemInstructions, prompt, onChunk) {
+async function runGeminiPrompt(systemInstructions, prompt, params, onChunk) {
   try {
     const geminiModel = genAI.getGenerativeModel({
       model: "gemini-1.5-flash",
       systemInstruction: systemInstructions,
+      generationConfig: params,
     });
     const response = await geminiModel.generateContentStream(prompt);
 
@@ -122,23 +121,20 @@ When responding:
 Your primary goal is to provide relevant and context-aware answers based on the provided page data.
 `;
 
+  const params = getParams();
   if (isChromeAvailable) {
     console.log("Using chrome.aiOriginTrial model");
-    const params = {
-      temperature: 0.3,
-      topK: 10,
-    };
 
     try {
       await runChromePrompt(systemInstructions, prompt, params, onChunk);
     } catch (error) {
       console.error("Error in chrome.aiOriginTrial prompt:", error);
       console.log("Falling back to Gemini model...");
-      await runGeminiPrompt(systemInstructions, prompt, onChunk);
+      await runGeminiPrompt(systemInstructions, prompt, params, onChunk);
     }
   } else {
     console.log("Using Gemini model");
-    await runGeminiPrompt(systemInstructions, prompt, onChunk); // Fall back to the Gemini model
+    await runGeminiPrompt(systemInstructions, prompt, params, onChunk); // Fall back to the Gemini model
   }
 }
 
