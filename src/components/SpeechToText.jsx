@@ -30,6 +30,7 @@ const SpeechToText = ({ setPrompt, handlePrompt }) => {
           <MicIcon className="text-primary" />
         )}
       </button>
+      
       {/* <p>{listening ? "Listening..." : "Click to start listening."}</p>
       <div style={{ marginTop: "20px" }}>
         <h2>Transcript:</h2>
