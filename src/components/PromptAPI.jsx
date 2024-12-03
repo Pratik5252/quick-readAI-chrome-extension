@@ -98,9 +98,8 @@ const PromptAPI = ({ content }) => {
         <div className="flex items-center gap-3">
           <button
             onClick={handleToggle}
-            className={`text-primary transition-transform duration-500 ${
-              toggle ? "-rotate-180" : "rotate-0"
-            }`}
+            className={`text-primary transition-transform duration-500 ${toggle ? "-rotate-180" : "rotate-0"
+              }`}
           >
             <KeyboardArrowDownIcon />
           </button>
@@ -130,6 +129,7 @@ const PromptAPI = ({ content }) => {
             </button>
           )}
           <SpeechToText setPrompt={setPrompt} handlePrompt={handlePrompt} />
+         
         </div>
         {toggle && (
           <div className="mt-3">
