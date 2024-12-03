@@ -1,55 +1,18 @@
 /*global chrome*/
 import { useEffect, useState } from "react";
 import PromptAPI from "./components/PromptAPI";
-// import SpeechToText from "./components/SpeechToText";
-import { Button, Container, Typography, ButtonGroup, Box } from "@mui/material";
-import ArrowDropDownOutlinedIcon from "@mui/icons-material/ArrowDropDownOutlined";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import RotateRightOutlinedIcon from "@mui/icons-material/RotateRightOutlined";
-import ThemeToggle from "./ui/ThemeToggle";
+import { createTheme } from "@mui/material/styles";
 import Header from "./components/Header";
 import Translation from "./components/Translation";
-
-// Create a theme
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#1976d2", // Blue
-      dark: "#1A1A10",
-      light: "#F8F8F8", //white
-    },
-    secondary: {
-      main: "#d32f2f", // Red
-    },
-  },
-  typography: {
-    fontFamily: "Inter, serif",
-    h4: {
-      fontWeight: 600,
-    },
-  },
-});
 
 function App() {
   const [extractedData, setExtractedData] = useState(null);
   const handleClick = async () => {
-    // Send message to content script to extract content
-    // chrome.runtime.sendMessage(
-    //   { action: 'extractContent' },
-    //   (response) => {
-    //     // Set the extracted data in the state
-    //     setExtractedData(response);
-    //   }
-    // );
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     chrome.scripting.executeScript(
       {
         target: { tabId: tab.id },
         func: () => document.body.innerText,
-        // alert('Hello from my extension!');
-
-        // console.log("--DOC");
-        // console.log(document.body.innerText);
       },
       (results) => {
         if (chrome.runtime.lastError) {
@@ -92,26 +55,11 @@ function App() {
   return (
     <div className="">
       <div className="flex flex-col h-screen bg-primary-bg">
-        {/* <Button onClick={handleClick} startIcon={<RotateRightOutlinedIcon />}>
-          Extract Page Content
-        </Button>
-        <Button startIcon={<ArrowDropDownOutlinedIcon />} onClick={scrollDown}>
-          Scroll Down
-        </Button> */}
-
-        {/* {extractedData && (
-          <div>
-            <h2>Extracted Data:</h2>
-            <pre>{JSON.stringify(extractedData, null, 2)}</pre>
-          </div>
-        )} */}
-
         <Header />
         <div className="flex-1 overflow-hidden">
           <PromptAPI content={extractedData} />
-          
         </div>
-        <Translation/>
+        {/* <Translation/> */}
       </div>
     </div>
   );
