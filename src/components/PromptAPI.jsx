@@ -8,6 +8,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ArticleRoundedIcon from "@mui/icons-material/ArticleRounded";
 import SummarizationAPI from "./SummarizationAPI";
 import SkeletonLoader from "../ui/SkeletonLoader";
+import useSpeechToText from "../hooks/useSpeechToText";
 
 const PromptAPI = ({ content }) => {
   const [prompt, setPrompt] = useState(""); // Set a default prompt if needed
@@ -17,6 +18,7 @@ const PromptAPI = ({ content }) => {
   const [toggle, setToggle] = useState(false);
   const [summary, setSummary] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isSpeechInput, setIsSpeechInput] = useState(false);
 
   const handleToggle = () => {
     setToggle((prev) => !prev);
@@ -31,9 +33,10 @@ const PromptAPI = ({ content }) => {
     setIsLoading(true);
     setError(null);
     setResponseText("");
+    setPrompt("");
 
     try {
-      console.log(prompt)
+      console.log(prompt);
       await promptApi(content, prompt, (chunk) => {
         const { text, model } = chunk;
         if (model === "chrome") {
@@ -47,15 +50,25 @@ const PromptAPI = ({ content }) => {
       console.error(err);
     } finally {
       setIsLoading(false);
+      // setPrompt("");
+      setIsSpeechInput(false);
     }
   };
 
   // Automatically trigger the prompt when the component mounts or content changes
   useEffect(() => {
-    if (content && prompt) {
+    if (isSpeechInput && prompt) {
       handlePrompt();
     }
-  }, [content, prompt]);
+  }, [isSpeechInput, prompt]);
+
+  const { toggleRecording, listening } = useSpeechToText({
+    setPrompt: (text) => {
+      setPrompt(text);
+      setIsSpeechInput(true);
+    },
+    handlePrompt,
+  });
 
   return (
     <div className="flex flex-col h-full p-2 mx-3 overflow-hidden">
@@ -116,6 +129,12 @@ const PromptAPI = ({ content }) => {
               e.target.style.height = "auto";
               e.target.style.height = `${e.target.scrollHeight}px`;
             }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault(); // Prevent newline
+                handlePrompt(); // Submit prompt on Enter
+              }
+            }}
           />
           {prompt && (
             <button
@@ -129,7 +148,15 @@ const PromptAPI = ({ content }) => {
               )}
             </button>
           )}
-          <SpeechToText setPrompt={setPrompt} handlePrompt={handlePrompt} />
+          <SpeechToText
+            setPrompt={(text) => {
+              setPrompt(text);
+              setIsSpeechInput(true); // Mark input as speech
+            }}
+            handlePrompt={handlePrompt}
+            toggleRecording={toggleRecording}
+            listening={listening}
+          />
         </div>
         {toggle && (
           <div className="mt-3">

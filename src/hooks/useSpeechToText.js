@@ -29,11 +29,13 @@ const useSpeechToText = ({ setPrompt, handlePrompt }) => {
 
   const stopListeningWithSilenceDetection = async () => {
     SpeechRecognition.stopListening();
+    clearTimeout(silenceTimeout.current); // Clear the silence timer
     if (transcript.trim()) {
       setPrompt(transcript);
       await handlePrompt(); // Automatically execute the prompt
+      console.log("Submiting query auto");
     }
-    clearTimeout(silenceTimeout.current); // Clear the silence timer
+    resetTranscript();
   };
 
   const toggleRecording = async () => {
@@ -48,7 +50,9 @@ const useSpeechToText = ({ setPrompt, handlePrompt }) => {
       if (transcript.trim()) {
         setPrompt(transcript);
         await handlePrompt(); // Submit if user manually stops
+        console.log("Submiting query manually");
       }
+      resetTranscript();
     } else {
       resetTranscript(); // Clear previous transcript
       setPrompt("");
