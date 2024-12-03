@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { promptApi } from "../services/prompt-api";
 import SpeechToText from "./SpeechToText";
@@ -10,7 +10,7 @@ import SummarizationAPI from "./SummarizationAPI";
 import SkeletonLoader from "../ui/SkeletonLoader";
 
 const PromptAPI = ({ content }) => {
-  const [prompt, setPrompt] = useState("");
+  const [prompt, setPrompt] = useState(""); // Set a default prompt if needed
   const [responseText, setResponseText] = useState(""); // Response state
   const [isLoading, setIsLoading] = useState(false); // Loading state
   const [error, setError] = useState(null);
@@ -33,6 +33,7 @@ const PromptAPI = ({ content }) => {
     setResponseText("");
 
     try {
+      console.log(prompt)
       await promptApi(content, prompt, (chunk) => {
         const { text, model } = chunk;
         if (model === "chrome") {
@@ -48,6 +49,13 @@ const PromptAPI = ({ content }) => {
       setIsLoading(false);
     }
   };
+
+  // Automatically trigger the prompt when the component mounts or content changes
+  useEffect(() => {
+    if (content && prompt) {
+      handlePrompt();
+    }
+  }, [content, prompt]);
 
   return (
     <div className="flex flex-col h-full p-2 mx-3 overflow-hidden">
@@ -136,4 +144,5 @@ const PromptAPI = ({ content }) => {
     </div>
   );
 };
+
 export default PromptAPI;

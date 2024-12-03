@@ -12,7 +12,7 @@ const useSpeechToText = ({ setPrompt, handlePrompt }) => {
   } = useSpeechRecognition();
 
   const [microphoneAccess, setMicrophoneAccess] = useState(false);
-  const silenceTimeout = useRef(null); // Ref for managing timeout
+  const silenceTimeout = useRef(null); // Ref to manage the silence timer
 
   useEffect(() => {
     if (!browserSupportsSpeechRecognition) {
@@ -27,13 +27,13 @@ const useSpeechToText = ({ setPrompt, handlePrompt }) => {
       .catch((err) => console.error("Microphone access denied.", err));
   }, [browserSupportsSpeechRecognition]);
 
-  const stopListeningWithSilenceDetection = () => {
+  const stopListeningWithSilenceDetection = async () => {
     SpeechRecognition.stopListening();
     if (transcript.trim()) {
-      handlePrompt(); // Submit the transcript if it's not empty
+      setPrompt(transcript);
+      await handlePrompt(); // Automatically execute the prompt
     }
-    setPrompt(transcript);
-    clearTimeout(silenceTimeout.current);
+    clearTimeout(silenceTimeout.current); // Clear the silence timer
   };
 
   const toggleRecording = async () => {
@@ -45,13 +45,16 @@ const useSpeechToText = ({ setPrompt, handlePrompt }) => {
     if (listening) {
       SpeechRecognition.stopListening();
       clearTimeout(silenceTimeout.current);
-      await setPrompt(transcript);
+      if (transcript.trim()) {
+        setPrompt(transcript);
+        await handlePrompt(); // Submit if user manually stops
+      }
     } else {
-      resetTranscript(); // Clear transcript on start
+      resetTranscript(); // Clear previous transcript
       setPrompt("");
       SpeechRecognition.startListening({ continuous: true, language: "en-US" });
 
-      // Silence detection logic
+      // Initialize silence detection timeout
       silenceTimeout.current = setTimeout(() => {
         stopListeningWithSilenceDetection();
       }, 2000);
