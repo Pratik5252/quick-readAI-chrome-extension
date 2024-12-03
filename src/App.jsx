@@ -8,6 +8,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import RotateRightOutlinedIcon from "@mui/icons-material/RotateRightOutlined";
 import ThemeToggle from "./ui/ThemeToggle";
 import Header from "./components/Header";
+import Translation from "./components/Translation";
 
 // Create a theme
 const theme = createTheme({
@@ -108,7 +109,9 @@ function App() {
         <Header />
         <div className="flex-1 overflow-hidden">
           <PromptAPI content={extractedData} />
+          
         </div>
+        <Translation/>
       </div>
     </div>
   );
