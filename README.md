@@ -1,14 +1,11 @@
 # 🌐 **Quick Read AI** 🚀
 
-A Chrome Extension powered by **Nano AI** to enhance your browsing experience. This project was developed as part of the **Google Chrome Built-in AI Challenge** to demonstrate how to use **Chrome's built-in AI APIs**, such as **Gemini Nano**, to interact with integrated models and perform tasks like text summarization, webpage translation, and more.
+A Chrome Extension powered by **Nano AI** to enhance your browsing experience. This project was developed as part of the **Google Chrome Built-in AI Challenge** to demonstrate how to use **Chrome's built-in AI APIs**, such as **Gemini Nano**, to interact with integrated models and perform tasks like text summarization, and more.
 
 ## 📝 **Features**
 
 - **Text Summarization**  
   Highlight text on any webpage and get a concise summary.
-
-- **Web Page Translation**  
-  Translate entire web pages into multiple languages instantly.
 
 - **Basic AI Tasks**  
   Additional AI-powered utilities to improve productivity.
@@ -71,8 +68,9 @@ Before you can use the **Nano AI** functionality in your extension, you need to 
 
 1. **Open Chrome**, and in a new tab, go to `chrome://flags/#optimization-guide-on-device-model`.
 2. Select **Enabled** for **BypassPerfRequirement**. This bypasses performance checks, which might interfere with downloading Gemini Nano.
-3. Go to `chrome://flags/#prompt-api-for-gemini-nano` and select **Enabled**.
-4. **Relaunch Chrome**.
+3. For Prompt API, go to `chrome://flags/#prompt-api-for-gemini-nano` and select **Enabled**.
+4. For Summarization API, go to `chrome://flags/#summarization-api-for-gemini-nano` and select **Enabled**
+5. **Relaunch Chrome**.
 
 ### **Confirm Availability of Gemini Nano**
 
@@ -115,7 +113,7 @@ With the **Prompt API** enabled, you can head over to the Chrome Dev Playground 
 ## 🖥️ **Usage**
 
 - Click the extension icon in the Chrome toolbar.
-- Choose a task (Summarize text, Translate webpage, etc.).
+- Choose a task (Summarize text etc.).
 - Wait a moment for **Nano AI** to process the task and provide results.
 
 
